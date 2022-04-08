@@ -73,7 +73,6 @@ class App:
 		point = 0
 		
 		while True:
-			print(mot)
 			for event in pg.event.get():
 				if event.type == pg.QUIT:
 					pg.quit()
@@ -98,6 +97,13 @@ class App:
 				num = ''
 				l = not(l)
 				t=2
+			
+			if 'sc' in num or 'cs' in num:
+				num=''
+				self.map = pg.transform.scale(self.map, (random.randint(0,self.width),random.randint(0,self.height)))
+			if 'nor' in num:
+				num = ''
+				self.map = pg.transform.scale(self.map, (self.width,self.height))
 			
 			if l:
 				self.fun(graph,t)

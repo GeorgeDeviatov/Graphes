@@ -1,5 +1,6 @@
 from edge import Edge
 import pygame as pg
+import random
 pg.init()
 
 class App:
@@ -11,7 +12,16 @@ class App:
 		self.map = pg.image.load("USAMap.png")
 	
 	
-	
+	def fun(self,graph,t):
+		if t == 1:
+			for v in graph._vertices:
+				v.pos = (random.randint(0,self.width/10),random.randint(0,self.height/10))
+		else:
+			for v in graph._vertices:
+				n = random.randint(0,len(graph._vertices)-1)
+				old = v.pos
+				v.pos = graph._vertices[n].pos
+				graph._vertices[n].pos = old
 	
 	def draw_graph(self,graph,path):
 		for vertex in graph._vertices:
@@ -31,11 +41,68 @@ class App:
 				pg.draw.line(self.screen,col,(f.pos[0]*(self.width/100),f.pos[1]*(self.height/100)),
 							 (s.pos[0]*(self.width/100),s.pos[1]*(self.height/100)),3)
 	
-	def run(self,graph,path):
+	
+	def set_pos(self,graph,path):
+		i = 0
 		while True:
+			if i >= len(graph._vertices):
+				return graph
+			
+			self.screen.blit(self.map,(0,0))
+			self.draw_graph(graph,path)
+			pg.display.flip()
+			self.clock.tick(30)
+			self.screen.fill((0,0,0))
+			
 			for event in pg.event.get():
 				if event.type == pg.QUIT:
 					pg.quit()
+				if event.type == pg.MOUSEBUTTONDOWN:
+					print(event.pos,graph._vertices[i])
+					graph._vertices[i].pos = (event.pos[0]/(self.width/100),event.pos[1]/(self.height/100))
+					i += 1
+			
+	
+	
+	
+	def run(self,graph,path):
+		#graph = self.set_pos(graph,path)
+		num=''
+		l = False
+		mot = False
+		point = 0
+		
+		while True:
+			print(mot)
+			for event in pg.event.get():
+				if event.type == pg.QUIT:
+					pg.quit()
+				if event.type == pg.KEYDOWN:
+					num+=(pg.key.name(event.key))
+				if event.type == pg.MOUSEBUTTONDOWN:
+					for v in range(len(graph._vertices)-1):
+						print(event.pos,graph._vertices[v].pos[0]*(self.width/100),graph._vertices[v].pos[1]*(self.height/100))
+						if event.pos < (graph._vertices[v].pos[0]*(self.width/100)+10,graph._vertices[v].pos[1]*(self.height/100)+10) and event.pos > (graph._vertices[v].pos[0]*(self.width/100)-10,graph._vertices[v].pos[1]*(self.height/100)-10):
+							mot = True
+							point = v
+							break
+				if event.type == pg.MOUSEBUTTONUP:
+					if mot:
+						graph._vertices[point].pos = (event.pos[0]/(self.width/100),event.pos[1]/(self.height/100))
+			
+			if 'fun1' in num:
+				num = ''
+				l = not(l)
+				t = 1
+			elif 'fun2' in num:
+				num = ''
+				l = not(l)
+				t=2
+			
+			if l:
+				self.fun(graph,t)
+				
+				
 			
 			self.screen.blit(self.map,(0,0))
 			self.draw_graph(graph,path)
@@ -163,7 +230,3 @@ if __name__ == "__main__":
 		
 		app = App(1200,600)
 		app.run(city_graph,solution)
-
-
-
-# There is a very strange problem in this programm: edge 'Atlanta' - 'Chicago' does not draw

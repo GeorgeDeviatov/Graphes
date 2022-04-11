@@ -1,4 +1,4 @@
-from edge import Edge
+from edge import Edge, WeightedEdge
 import pygame as pg
 import random
 pg.init()
@@ -81,13 +81,19 @@ class App:
 				if event.type == pg.MOUSEBUTTONDOWN:
 					for v in range(len(graph._vertices)-1):
 						print(event.pos,graph._vertices[v].pos[0]*(self.width/100),graph._vertices[v].pos[1]*(self.height/100))
-						if event.pos < (graph._vertices[v].pos[0]*(self.width/100)+10,graph._vertices[v].pos[1]*(self.height/100)+10) and event.pos > (graph._vertices[v].pos[0]*(self.width/100)-10,graph._vertices[v].pos[1]*(self.height/100)-10):
-							mot = True
-							point = v
-							break
+						if event.pos < (graph._vertices[v].pos[0]*(self.width/100)+10,graph._vertices[v].pos[1]*(self.height/100)+10):
+							if event.pos > (graph._vertices[v].pos[0]*(self.width/100)-10,graph._vertices[v].pos[1]*(self.height/100)-10):
+								mot = True
+								point = v
+								break
+				if event.type == pg.MOUSEMOTION:
+					if mot:
+						graph._vertices[point].pos = (event.pos[0]/(self.width/100),event.pos[1]/(self.height/100))						
 				if event.type == pg.MOUSEBUTTONUP:
 					if mot:
 						graph._vertices[point].pos = (event.pos[0]/(self.width/100),event.pos[1]/(self.height/100))
+					point = 0
+					mot = False
 			
 			if 'fun1' in num:
 				num = ''
@@ -191,6 +197,23 @@ class Graph:
 			desc += f"{self.vertex_at(i)} -> {self.neighbors_for_index(i)}\n"
 
 		return desc
+
+class WeightedGraph(Graph):
+	def __init__(self,vertices):
+		super().__init__(vertices)
+	
+	def add_edge_by_indeces(self,u,v,weight):
+		edge = WeightedEdge(u,v,weight)
+		self.add_egde(edge)
+	
+	def add_edge_by_vertices(self,first,second,weight):
+		u = self._vertices.index(first)
+		v = self._vertices.index(second)
+		self.add_edge_by_indeces(u,v,weight)
+	
+	def neighbours_for_index_with_weights(self,index):
+		return list(map(self.vertex_at,[(e.v,e.weight) for e in self._edges[index]]))
+
 
 if __name__ == "__main__":
 		city_graph = Graph([Vertix("Seattle",(9,7)),Vertix("San Francisco",(3,38)),Vertix("Los Angeles",(8,51)),

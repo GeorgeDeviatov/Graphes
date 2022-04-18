@@ -1,6 +1,8 @@
-from edge import Edge
+from edge import Edge, WeightedEdge
 import pygame as pg
 import random
+import math
+from WeightedGraph import WeightedGraph
 pg.init()
 
 class App:
@@ -113,8 +115,18 @@ class App:
 			
 			if l:
 				self.fun(graph,t)
-				
-				
+			
+			for e in graph._edges:
+				graph.calc_distance(e)
+			'''
+			bfs_result = bfs("Washington",lambda x:x=="Phoenix",city_graph.neighbors_for_vertex)
+			if bfs_result is None:
+				print("no")
+			else:
+				solution = node_to_path(bfs_result)
+			print(solution)'''
+			
+			print(graph._edges[0][0].weight)
 			
 			self.screen.blit(self.map,(0,0))
 			self.draw_graph(graph,path)
@@ -198,47 +210,50 @@ class Graph:
 
 		return desc
 
+
+
+
 if __name__ == "__main__":
-		city_graph = Graph([Vertix("Seattle",(9,7)),Vertix("San Francisco",(3,38)),Vertix("Los Angeles",(8,51)),
+		city_graph = WeightedGraph([Vertix("Seattle",(9,7)),Vertix("San Francisco",(3,38)),Vertix("Los Angeles",(8,51)),
 		Vertix("Riverside",(13,51)),Vertix("Phoenix",(20,57)),Vertix("Chicago",(65,33))
 		,Vertix("Boston",(94,25)),Vertix("New York",(89,30)),Vertix("Atlanta",(73,58))
 		,Vertix("Miami",(84,82)),Vertix("Dallas",(49,63)),Vertix("Houston",(52,72)),
 		Vertix("Washington",(85,37)),Vertix("Detroit",(73,30)),Vertix("Philadelphia",(87,34))])
-		city_graph.add_edge_by_vertices("Seattle", "Chicago")
-		city_graph.add_edge_by_vertices("Seattle", "San Francisco")
-		city_graph.add_edge_by_vertices("San Francisco", "Riverside")
-		city_graph.add_edge_by_vertices("San Francisco", "Los Angeles")
-		city_graph.add_edge_by_vertices("Los Angeles", "Riverside")
-		city_graph.add_edge_by_vertices("Los Angeles", "Phoenix")
-		city_graph.add_edge_by_vertices("Riverside", "Phoenix")
-		city_graph.add_edge_by_vertices("Riverside", "Chicago")
-		city_graph.add_edge_by_vertices("Phoenix", "Dallas")
-		city_graph.add_edge_by_vertices("Phoenix", "Houston")
-		city_graph.add_edge_by_vertices("Dallas", "Chicago")
-		city_graph.add_edge_by_vertices("Dallas", "Atlanta")
-		city_graph.add_edge_by_vertices("Dallas", "Houston")
-		city_graph.add_edge_by_vertices("Houston", "Atlanta")
-		city_graph.add_edge_by_vertices("Houston", "Miami")
-		city_graph.add_edge_by_vertices("Atlanta", "Chicago")
-		city_graph.add_edge_by_vertices("Atlanta", "Washington")
-		city_graph.add_edge_by_vertices("Atlanta", "Miami")
-		city_graph.add_edge_by_vertices("Miami", "Washington")
-		city_graph.add_edge_by_vertices("Chicago", "Detroit")
-		city_graph.add_edge_by_vertices("Detroit", "Boston")
-		city_graph.add_edge_by_vertices("Detroit", "Washington")
-		city_graph.add_edge_by_vertices("Detroit", "New York")
-		city_graph.add_edge_by_vertices("Boston", "New York")
-		city_graph.add_edge_by_vertices("New York", "Philadelphia")
-		city_graph.add_edge_by_vertices("Philadelphia", "Washington")
+		city_graph.add_edge_by_vertices("Seattle", "Chicago",1737)
+		city_graph.add_edge_by_vertices("Seattle", "San Francisco",678)
+		city_graph.add_edge_by_vertices("San Francisco", "Riverside",386)
+		city_graph.add_edge_by_vertices("San Francisco", "Los Angeles",348)
+		city_graph.add_edge_by_vertices("Los Angeles", "Riverside",50)
+		city_graph.add_edge_by_vertices("Los Angeles", "Phoenix",357)
+		city_graph.add_edge_by_vertices("Riverside", "Phoenix",307)
+		city_graph.add_edge_by_vertices("Riverside", "Chicago",1704)
+		city_graph.add_edge_by_vertices("Phoenix", "Dallas",887)
+		city_graph.add_edge_by_vertices("Phoenix", "Houston",1015)
+		city_graph.add_edge_by_vertices("Dallas", "Chicago",805)
+		city_graph.add_edge_by_vertices("Dallas", "Atlanta",721)
+		city_graph.add_edge_by_vertices("Dallas", "Houston",225)
+		city_graph.add_edge_by_vertices("Houston", "Atlanta",702)
+		city_graph.add_edge_by_vertices("Houston", "Miami",968)
+		city_graph.add_edge_by_vertices("Atlanta", "Chicago",588)
+		city_graph.add_edge_by_vertices("Atlanta", "Washington",543)
+		city_graph.add_edge_by_vertices("Atlanta", "Miami",604)
+		city_graph.add_edge_by_vertices("Miami", "Washington",923)
+		city_graph.add_edge_by_vertices("Chicago", "Detroit",238)
+		city_graph.add_edge_by_vertices("Detroit", "Boston",613)
+		city_graph.add_edge_by_vertices("Detroit", "Washington",396)
+		city_graph.add_edge_by_vertices("Detroit", "New York",482)
+		city_graph.add_edge_by_vertices("Boston", "New York",190)
+		city_graph.add_edge_by_vertices("New York", "Philadelphia",81)
+		city_graph.add_edge_by_vertices("Philadelphia", "Washington",123)
 		print(city_graph)
 
 		from generic_search import astar,dfs,bfs,Node,node_to_path
-		bfs_result = bfs("Washington",lambda x:x=="Phoenix",city_graph.neighbors_for_vertex)
+		bfs_result = bfs("Washington",lambda x:x=="Riverside",city_graph.neighbors_for_vertex)
 		if bfs_result is None:
 			print("no")
 		else:
 			solution = node_to_path(bfs_result)
 			print(solution)
 		
-		app = App(1200,600)
-		app.run(city_graph,solution)
+		#app = App(1200,600)
+		#app.run(city_graph,solution)

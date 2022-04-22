@@ -26,6 +26,7 @@ class App:
 				graph._vertices[n].pos = old
 	
 	def draw_graph(self,graph,path):
+		'''
 		for vertex in graph._vertices:
 			pg.draw.circle(self.screen, (0,0,255), (vertex.pos[0]*self.width//100,vertex.pos[1]*self.height//100), 10)
 			font = pg.font.SysFont('c059',self.width//100)
@@ -41,10 +42,28 @@ class App:
 					if abs(path.index(f.name) - path.index(s.name))<=1:
 						col = (255,0,0)
 				pg.draw.line(self.screen,col,(f.pos[0]*(self.width/100),f.pos[1]*(self.height/100)),
-							 (s.pos[0]*(self.width/100),s.pos[1]*(self.height/100)),3)
+							 (s.pos[0]*(self.width/100),s.pos[1]*(self.height/100)),3)'''
+		for vertex in graph._vertices:
+			pg.draw.circle(self.screen, (0,0,255), (vertex.pos[0]*self.width//100,vertex.pos[1]*self.height//100), 10)
+			font = pg.font.SysFont('c059',self.width//100)
+			f = font.render(vertex.name,False,(255,0,0))
+			self.screen.blit(f,(vertex.pos[0]*(self.width/100),vertex.pos[1]*(self.height/100)+10))
+		rr = []
+		for ed in graph._edges:
+			for edge in ed:
+				f = graph._vertices[edge.u]
+				s = graph._vertices[edge.v]
+				col = (0,255,0)
+				pg.draw.line(self.screen,(255,0,0),(f.pos[0]*(self.width/100),f.pos[1]*(self.height/100)),
+							(s.pos[0]*(self.width/100),s.pos[1]*(self.height/100)),3)
+		for edd in path:
+			f = graph._vertices[edd.u]
+			s = graph._vertices[edd.v]
+			pg.draw.line(self.screen,(255,0,0),(f.pos[0]*(self.width/100),f.pos[1]*(self.height/100)),
+						(s.pos[0]*(self.width/100),s.pos[1]*(self.height/100)),3)
 	
 	
-	def set_pos(self,graph,path):
+	def set_pos111(self,graph,path):
 		i = 0
 		while True:
 			if i >= len(graph._vertices):
@@ -115,9 +134,9 @@ class App:
 			
 			if l:
 				self.fun(graph,t)
-			
+			'''
 			for e in graph._edges:
-				graph.calc_distance(e)
+				graph.calc_distance(e)'''
 			'''
 			bfs_result = bfs("Washington",lambda x:x=="Phoenix",city_graph.neighbors_for_vertex)
 			if bfs_result is None:
@@ -125,8 +144,7 @@ class App:
 			else:
 				solution = node_to_path(bfs_result)
 			print(solution)'''
-			
-			print(graph._edges[0][0].weight)
+
 			
 			self.screen.blit(self.map,(0,0))
 			self.draw_graph(graph,path)
@@ -248,12 +266,16 @@ if __name__ == "__main__":
 		print(city_graph)
 
 		from generic_search import astar,dfs,bfs,Node,node_to_path
+		'''
 		bfs_result = bfs("Washington",lambda x:x=="Riverside",city_graph.neighbors_for_vertex)
 		if bfs_result is None:
 			print("no")
 		else:
 			solution = node_to_path(bfs_result)
-			print(solution)
+			print(solution)'''
+		from mst import mst, total_score, print_weighted_path
+		r = mst(city_graph,5)
+		print_weighted_path(city_graph,r)
 		
-		#app = App(1200,600)
-		#app.run(city_graph,solution)
+		app = App(1200,600)
+		app.run(city_graph,r)
